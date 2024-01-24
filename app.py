@@ -1,9 +1,9 @@
 # import required packages
 import streamlit as st
-from streamlit_option_menu import option_menu
 from PIL import Image
 import numpy as np
 import pickle
+from streamlit_drawable_canvas import st_canvas
 
 # Start by creating a venv:
 # python -m venv myenv
@@ -24,26 +24,7 @@ import pickle
 
 # API Request to generate the capstone project
 
-st.set_page_config(
-    page_title="Business Strategy Syllabus",
-    page_icon="🌐",
-    initial_sidebar_state="expanded",
-)
-
-'''
-canvas_result = st_canvas(
-    fill_color="rgba(255, 165, 0, 0.3)",  # Fixed fill color with some opacity
-    stroke_width=2,
-    stroke_color='#e00',
-    background_color="#fff",
-    height=150,
-    drawing_mode='freedraw',
-    key="canvas",
-)
-
-if canvas_result.image_data is not None:
-    st.image(canvas_result.image_data)
-'''
+st.set_page_config(page_title="Hand Drawing and Neural Networks", page_icon=":pencil:")
 
 def ReLU(Z):
     return np.maximum(Z,0)
@@ -71,7 +52,7 @@ def forward_propagation(X,W1,b1,W2,b2):
     return Z1, A1, Z2, A2
 
 def get_predictions(A2):
-    return np.argmax(A2, 0)
+    return A2
 
 SCALE_FACTOR = 255
 
@@ -95,29 +76,19 @@ def show_prediction(image, W1, b1, W2, b2):
     #Splt.show()
     return prediction
 
-
 # Title
 st.markdown(
-    f"<h1 style='font-size: 36px; text-align: center;'>BIG DATA & AI IN BUSINESS STRATEGY</h1>",
+    f"<h1 style='font-size: 36px; text-align: center;'>Hand Drawing and Neural Networks</h1>",
     unsafe_allow_html=True,
 )
 
 # Introductory Message
 st.markdown(
-    f"<p style='font-size: 20px; text-align: center;'>Welcome to Your AI-Driven Learning Experience!</p>",
+    f"<p style='font-size: 20px; text-align: center;'>Draw a number and our neural network will guess the number!</p>",
     unsafe_allow_html=True,
 )
 
 # Instructions on how to use the app
-st.markdown(
-    f"<h2 style='font-size: 28px;'>How to Use:</h2>",
-    unsafe_allow_html=True,
-)
-st.write("1. **Configure your OpenAI API key in the sidebar.**")
-st.write("2. **Input your professional information on the left.**")
-st.write(
-    "3. **Click on 'Generate Syllabus' to receive your personalized learning plan.**"
-)
 
 # Upload an image file
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
@@ -134,7 +105,61 @@ if uploaded_file is not None:
     image = Image.open(uploaded_file).convert('L')  # Convert to grayscale
     image = image.resize((28, 28))
     image = np.array(image) #/ 255.0  # Normalize pixel values to be in the range [0, 1]
-
+    print('new image upload')
+    for array in image:
+        line = ''
+        for item in array:
+            item = str(item).rjust(4)
+            line = line+item
+        #print(line)
     # Use the make_predictions function
     prediction = show_prediction(image, W1, b1, W2, b2)
     st.write("Prediction:", prediction)
+
+canvas_result = st_canvas(
+    #fill_color="rgba(0, 0, 0, 0)",  # Fixed fill color with some opacity
+    stroke_width=6,
+    stroke_color='#FFFFFF',
+    background_color="#000000",
+    height=150,
+    width=150,
+    drawing_mode='freedraw',
+    key="canvas",
+)
+
+if canvas_result.image_data is not None:
+    st.image(canvas_result.image_data)
+    image = Image.fromarray(canvas_result.image_data).convert('L')
+    image = image.resize((28, 28))
+    image = np.array(image)
+    print('new image canvas')
+    for array in image:
+        line = ''
+        for item in array:
+            item = str(item).rjust(4)
+            line = line+item
+        #print(line)
+
+    if image.any() != 0:
+        prediction = show_prediction(image, W1, b1, W2, b2)
+        #st.write("Prediction:", prediction)
+        zipped_list = list(zip(list(range(len(prediction))), prediction))
+        zipped_list.sort(key=lambda x: x[1], reverse=True)
+        st.write("Top 3 predictions:")
+        for i in range(3):
+            st.write(zipped_list[i][0], "with probability", zipped_list[i][1])
+
+
+    #image = Image.open(image_data).convert('L')
+
+    # Display the image
+    #st.image(image, caption='Uploaded Image.', use_column_width=True)
+
+    # Load the image (replace 'your_image_file.png' with the actual file path)
+    #image = Image.open(uploaded_file).convert('L')  # Convert to grayscale
+    
+    ##
+    ## #/ 255.0  # Normalize pixel values to be in the range [0, 1]
+
+    # Use the make_predictions function
+    
