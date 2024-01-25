@@ -16,13 +16,7 @@ from streamlit_drawable_canvas import st_canvas
 # pip install -r requirements.txt
 
 # Run the code in the terminal:
-# streamlit run Syllabus_generator.py
-
-# Read the original syllabus
-
-# API Request to generate the syllabus
-
-# API Request to generate the capstone project
+# streamlit run app.py
 
 st.set_page_config(page_title="Hand Drawing and Neural Networks", page_icon=":pencil:")
 
@@ -52,6 +46,7 @@ def forward_propagation(X,W1,b1,W2,b2):
     return Z1, A1, Z2, A2
 
 def get_predictions(A2):
+    #Now it returns all predictions instead of the highest one
     return A2
 
 SCALE_FACTOR = 255
@@ -101,23 +96,24 @@ if uploaded_file is not None:
     # Display the image
     st.image(image, caption='Uploaded Image.', use_column_width=True)
 
-    # Load the image (replace 'your_image_file.png' with the actual file path)
     image = Image.open(uploaded_file).convert('L')  # Convert to grayscale
     image = image.resize((28, 28))
-    image = np.array(image) #/ 255.0  # Normalize pixel values to be in the range [0, 1]
-    print('new image upload')
+    image = np.array(image)
+
+    #The prints below were used to understand the image array
+    #print('new image upload')
     for array in image:
         line = ''
         for item in array:
             item = str(item).rjust(4)
             line = line+item
         #print(line)
+            
     # Use the make_predictions function
     prediction = show_prediction(image, W1, b1, W2, b2)
     st.write("Prediction:", prediction)
 
 canvas_result = st_canvas(
-    #fill_color="rgba(0, 0, 0, 0)",  # Fixed fill color with some opacity
     stroke_width=6,
     stroke_color='#FFFFFF',
     background_color="#000000",
@@ -132,7 +128,9 @@ if canvas_result.image_data is not None:
     image = Image.fromarray(canvas_result.image_data).convert('L')
     image = image.resize((28, 28))
     image = np.array(image)
-    print('new image canvas')
+
+    #The prints below were used to understand the image array
+    #print('new image canvas')
     for array in image:
         line = ''
         for item in array:
@@ -142,24 +140,11 @@ if canvas_result.image_data is not None:
 
     if image.any() != 0:
         prediction = show_prediction(image, W1, b1, W2, b2)
-        #st.write("Prediction:", prediction)
         zipped_list = list(zip(list(range(len(prediction))), prediction))
         zipped_list.sort(key=lambda x: x[1], reverse=True)
+
+        #Print the top three predictions
         st.write("Top 3 predictions:")
         for i in range(3):
             st.write(zipped_list[i][0], "with probability", zipped_list[i][1])
-
-
-    #image = Image.open(image_data).convert('L')
-
-    # Display the image
-    #st.image(image, caption='Uploaded Image.', use_column_width=True)
-
-    # Load the image (replace 'your_image_file.png' with the actual file path)
-    #image = Image.open(uploaded_file).convert('L')  # Convert to grayscale
-    
-    ##
-    ## #/ 255.0  # Normalize pixel values to be in the range [0, 1]
-
-    # Use the make_predictions function
     
