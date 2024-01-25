@@ -1,10 +1,10 @@
-# Streamlit App on Google App Engine
+# Neural Network from Scratch to Predict Handwritten Numbers
 
-https://syllabus-generator-ie.streamlit.app
+https://neuralhandwriting.streamlit.app
 
 ## Overview
 
-This repository contains the source code for a Streamlit app designed to transform the learning experience for the "Big Data & Artificial Intelligence in Business Strategy" course. The app utilizes generative AI to personalize syllabus content based on user input.
+This repository contains the source code for a Streamlit app and a neural network trained on the MNIST Dataset.
 
 ## Deployment Instructions
 
@@ -12,7 +12,7 @@ This repository contains the source code for a Streamlit app designed to transfo
 
 - [Google Cloud SDK](https://cloud.google.com/sdk) installed
 - Google Cloud Project created
-- Streamlit and OpenAI Python libraries installed (`pip install streamlit openai`)
+- Required libraries installed (`pip install -r requirements.txt`)
 
 ### Configuration
 
@@ -41,14 +41,15 @@ This repository contains the source code for a Streamlit app designed to transfo
 2. Run the Streamlit app locally:
 
    ```bash
-   streamlit run Syllabus_generator.py
+   streamlit run app.py
    ```
 
 3. Access the app in your browser at `http://localhost:8501`.
 
 ## App Structure
 
-- **Syllabus_generator.py:** Main Streamlit app script.
+- **app.py:** Main Streamlit app script.
+- **training_neural_network.ipynb:** Script to train the neural network
 - **app.yaml:** Configuration file for Google App Engine.
 - **requirements.txt:** List of Python dependencies.
 
