@@ -65,7 +65,7 @@ def make_predictions(image, W1, b1, W2, b2):
 
 def show_prediction(image, W1, b1, W2, b2):
     prediction = make_predictions(image, W1, b1, W2, b2)
-    print("Prediction: ", prediction)
+    #print("Prediction: ", prediction)
     #plt.gray()
     #plt.imshow(current_image, interpolation='nearest')
     #Splt.show()
@@ -146,5 +146,5 @@ if canvas_result.image_data is not None:
         #Print the top three predictions
         st.write("Top 3 predictions:")
         for i in range(3):
-            st.write(zipped_list[i][0], "with probability", zipped_list[i][1])
+            st.write(zipped_list[i][0], "with probability of", str(round(zipped_list[i][1][0], 3)*100)+"%")
     
